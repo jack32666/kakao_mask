@@ -63,7 +63,7 @@ def search_engine(user_input) :
             return mask_danawa
 
 def build_url(city) :
-    TOKEN = ""  ## 보
+    TOKEN = '사용자의 API KEY '  ## 보안 문제 상 쓰지 않았습니다
     return f'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName={city}&dataTerm=month&pageNo=1&numOfRows=10&ServiceKey={TOKEN}&ver=1.3&_returnType=json'
 
 def request_data(url) :
