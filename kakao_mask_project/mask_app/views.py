@@ -17,7 +17,7 @@ from django.http import JsonResponse, HttpResponse
 
 # Create your views here.
 
-def search_engine(user_input) :
+def search_engine(user_input) :  ## 네이버 쇼핑 크롤링 
     query_txt = urllib.parse.quote(user_input)
 
     url = requests.get('https://search.shopping.naver.com/search/all.nhn?&pagingIndex=1&pagingSize=40&productSet=model&viewType=list&sort=rel&frm=NVSHMDL&query=%s' %query_txt)
@@ -62,7 +62,7 @@ def search_engine(user_input) :
             mask_danawa = mask_danawa.reset_index()   ## 행 번호를 리셋시킨다
             return mask_danawa
 
-def build_url(city) :
+def build_url(city) :  ## 미세먼지 API 요청 
     TOKEN = '사용자의 API KEY '  ## 보안 문제 상 쓰지 않았습니다
     return f'http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName={city}&dataTerm=month&pageNo=1&numOfRows=10&ServiceKey={TOKEN}&ver=1.3&_returnType=json'
 
@@ -71,7 +71,7 @@ def request_data(url) :
     text_data = response.text
     return text_data
 
-def search_news() :
+def search_news() :  ## 네이버 뉴스 
     news_url = requests.get('https://search.naver.com/search.naver?where=news&sm=tab_jum&query=KF94+%2B%ED%8C%90%EB%A7%A4+-%EC%83%81%EC%88%A0+-%EA%B8%B0%EB%B6%80+-%EC%A4%91%EA%B5%AD+-%EC%88%98%ED%98%88')
     time.sleep(0.5)
 
@@ -138,14 +138,13 @@ def start_engine(request) :                                           # POST 형
         new_DB.save()
         new_DB_time = mask_DB(content = datetime.now())
         new_DB_time.save()
-        #print(mask_DB.objects.all())  ## 데이터베이스 확인용도
         
         if parameter_list[0] == "mask_category" :
             par = received_json_data['action']['params']['mask_category']
             sorted_mask_danawa = search_engine(par) ## 함수 실행
             url = "http://www.enuri.com/search.jsp?keyword=%s" %par
                 
-            return JsonResponse({
+            return JsonResponse({  ## 카카오 챗봇 json 응답포맷에 맞게 반환
           "version": "2.0",
           "template": {
             "outputs": [
